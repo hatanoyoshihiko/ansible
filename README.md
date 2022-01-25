@@ -2,9 +2,9 @@
 
 ## Playbooks
 
-- [log collect](./log_collect/readme.md)
-- [os_general_settings](../ansible/os_general_settings/readme.md)
-- [wordpress_deploy_ha](../ansible/wordpress_deploy_ha/README.md)
+- [log collect](./log_collect_ha/README.md)
+- [os_general_settings](./os_general_settings/README.md)
+- [wordpress_deploy_ha](./wordpress_deploy_ha/README.md)
 
 ## Tips
 
