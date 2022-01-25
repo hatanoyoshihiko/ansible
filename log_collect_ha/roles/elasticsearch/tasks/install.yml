@@ -1,0 +1,21 @@
+---
+- name: install jdk
+  yum:
+    name: java-1.8.0-openjdk
+    state: present
+
+- name: add repository
+  copy:
+    src: elasticsearch.repo
+    dest: /etc/yum.repos.d
+    mode: 0644
+    owner: root
+    group: root
+
+- name: import GPG KEY
+  command: /bin/rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+- name: install elasticsearch
+  yum:
+    name: elasticsearch
+    state: latest

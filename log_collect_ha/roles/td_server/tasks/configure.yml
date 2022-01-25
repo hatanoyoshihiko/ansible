@@ -1,0 +1,23 @@
+---
+- name: create log dir
+  file:
+    path:  "{{ td_log_dir }}"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+
+- name: td-agent.conf setting
+  template:
+    src: td-server.conf.j2
+    dest: /etc/td-agent/td-agent.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: restart_td-agent
+  systemd:
+    name: td-agent.service
+    enabled: yes
+    state: restarted
+...

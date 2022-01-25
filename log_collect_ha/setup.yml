@@ -1,0 +1,28 @@
+---
+## fluentd,elasticsearch,kibana deploy
+
+# ## need a proxy for internet connection
+#   environment:
+#     http_proxy: "http://proxy.jp:8080"
+#     https_proxy: "http://proxy.jp:8080"
+
+- name: fluentd server deploy
+  hosts: td_server
+  roles:
+    - { role: td_server, tags: td_server }
+
+- name: fluentd agent deploy
+  hosts: td_agent
+  roles:
+    - { role: td_agent, tags: td_agent }
+
+- name: elasticsearch deploy
+  hosts: elasticsearch
+  roles:
+    - { role: elasticsearch, tags: elasticsearch }
+
+- name: kibana deploy
+  hosts: kibana
+  roles:
+    - { role: kibana, tags: kibana }
+...

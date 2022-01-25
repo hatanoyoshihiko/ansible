@@ -1,0 +1,54 @@
+---
+## deploy config file
+- name: log directory existence check
+  stat:
+    path: "{{ item.path }}"
+  with_items: "{{ log_directories }}"
+  register: log_dir_check
+
+- name: log directory permission setting
+  file:
+    path: "{{ item.item.path }}"
+    mode: 0755
+  with_items: "{{ log_dir_check.results }}"
+  when: item.stat.exists
+
+- name: log file existence check
+  stat:
+    path: "{{ item.path }}/{{ item.logname }}"
+  with_items: "{{ log_files }}"
+  register: log_file_check
+
+- name: log file permission setting
+  file:
+    path: "{{ item.item.path }}/{{ item.item.logname }}"
+    mode: 0644
+  with_items: "{{ log_file_check.results }}"
+  when: item.stat.exists
+
+# - debug:
+#     msg: 'file id {{item.item.path}} (name {{item.item.logname}}) exists'
+#   with_items: "{{ log_file.results }}"
+#   when: item.stat.exists
+
+- name: logrotate setting for permission
+  copy:
+    src: logrotate.conf
+    dest: /etc/logrotate.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: td-agent.conf setting
+  template:
+    src: td-agent.conf.j2
+    dest: /etc/td-agent/td-agent.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: restart_td-agent
+  systemd:
+    name: td-agent.service
+    enabled: yes
+    state: restarted

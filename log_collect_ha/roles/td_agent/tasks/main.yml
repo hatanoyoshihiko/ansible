@@ -1,0 +1,6 @@
+---
+## fluentd agent deploy
+- import_tasks: check_before_install.yml
+- import_tasks: install.yml
+- import_tasks: configure.yml
+...

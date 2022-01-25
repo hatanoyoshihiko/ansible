@@ -1,0 +1,18 @@
+---
+## handlers
+- name: start_kibana
+  systemd:
+    name: kibana.service
+    state: started
+    enabled: yes
+  become: yes
+  listen: "start_kibana"
+
+- name: restart_kibana
+  systemd:
+    name: kibana.service
+    state: restarted
+    enabled: yes
+  become: yes
+  listen: "restart_kibana"
+...

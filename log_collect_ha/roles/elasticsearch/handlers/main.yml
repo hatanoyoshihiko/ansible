@@ -1,0 +1,18 @@
+---
+## handlers
+- name: start_elasticsearch
+  systemd:
+    name: elasticsearch.service
+    state: started
+    enabled: yes
+  become: yes
+  listen: "start_elasticsearch"
+
+- name: restart_elasticsearch
+  systemd:
+    name: elasticsearch.service
+    state: restarted
+    enabled: yes
+  become: yes
+  listen: "restart_elasticsearch"
+...

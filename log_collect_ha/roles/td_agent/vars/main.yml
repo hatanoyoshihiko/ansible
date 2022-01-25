@@ -1,0 +1,37 @@
+---
+network_kernel_parameters:
+  - name: net.core.somaxconn
+    value: "1024"
+  - name: net.core.netdev_max_backlog
+    value: "5000"
+  - name: net.core.rmem_max
+    value: "16777216"
+  - name: net.core.wmem_max
+    value: "16777216"
+  - name: net.ipv4.tcp_wmem
+    value: "4096 12582912 16777216"
+  - name: net.ipv4.tcp_rmem
+    value: "4096 12582912 16777216"
+  - name: net.ipv4.tcp_max_syn_backlog
+    value: "8096"
+  - name: net.ipv4.tcp_slow_start_after_idle
+    value: "0"
+  - name: net.ipv4.tcp_tw_reuse
+    value: "1"
+  - name: net.ipv4.ip_local_port_range
+    value: "10240 65535"
+
+log_files:
+  - { path: '/var/log', logname: 'messages', rotation: '3', size: '10M' }
+  - { path: '/var/log', logname: 'secure', rotation: '3', size: '10M' }
+  - { path: '/var/log/httpd', logname: 'access_log', rotation: '7', size: '10M' }
+  - { path: '/var/log/httpd', logname: 'error_log', rotation: '7', size: '10M' }
+  - { path: '/var/log/httpd', logname: 'ssl_access_log', rotation: '7', size: '10M' }
+  - { path: '/var/log/httpd', logname: 'ssl_error_log', rotation: '7', size: '10M' }
+  - { path: '/var/log/td-agent', logname: 'td-agent.log', rotation: '7', size: '10M' }
+
+log_directories:
+  - { path: '/var/log' }
+  - { path: '/var/log/httpd' }
+  - { path: '/var/log/td-agent'}
+...

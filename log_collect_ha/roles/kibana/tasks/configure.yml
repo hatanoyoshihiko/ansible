@@ -1,0 +1,60 @@
+---
+## deploy config file
+- name: log directory existence check
+  stat:
+    path: "{{ kibana_log_dir }}"
+  register: log_dir_check
+
+- name: create log directory
+  file:
+    path: "{{ kibana_log_dir }}"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  when: log_dir_check.stat.exists == false
+
+- name: log directory permission setting
+  file:
+    path: "{{ kibana_log_dir }}"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  when: log_dir_check.stat.exists
+
+- name: log file existence check
+  stat:
+    path: "{{ kibana_log_dir }}/{{ kibana_log_file }}"
+  register: log_file_check
+
+- name: create log file
+  file:
+    path: "{{ kibana_log_dir }}/{{ kibana_log_file }}"
+    owner: kibana
+    group: kibana
+    mode: 0644
+    state: touch
+  when: log_file_check.stat.exists == false
+
+- name: log file permission setting
+  file:
+    path: "{{ kibana_log_dir }}/{{ kibana_log_file }}"
+    owner: kibana
+    group: kibana
+    mode: 0644
+  when: log_file_check.stat.exists
+
+- name: kibana.yml setting
+  template:
+    src: kibana.yml.j2
+    dest: /etc/kibana/kibana.yml
+    owner: root
+    group: root
+    mode: 0644
+
+- name: kibana service start
+  systemd:
+    name: kibana
+    enabled: yes
+    state: restarted

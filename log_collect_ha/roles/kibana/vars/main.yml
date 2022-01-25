@@ -1,0 +1,4 @@
+---
+kibana_log_dir: /var/log/kibana
+kibana_log_file: kibana.log
+...

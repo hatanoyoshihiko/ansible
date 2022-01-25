@@ -1,0 +1,94 @@
+# td-agent.conf for server
+
+## Setting to accept logs from other td-agent
+<source>
+  @type forward
+  port 24224
+  bind 0.0.0.0
+</source>
+
+## plugin monitoring
+<source>
+  @type monitor_agent
+  bind 0.0.0.0
+  port 24220
+</source>
+
+## debug setting
+<source>
+  @type debug_agent
+  bind 127.0.0.1
+  port 24230
+</source>
+
+## log output setting
+<match {messages.syslog,secure.syslog,apache.**,fluent.**}>
+  @type forest
+  subtype copy
+  <template>
+    <store>
+      @type elasticsearch
+      host 192.168.10.200
+      port 9200
+      index_name ${tag_parts[0]}.${tag_parts[1]}
+#      type_name _doc
+      request_timeout 10s
+      reload_connections false
+    </store>
+    <store>
+      @type s3
+      aws_key_id AWS_KEY_ID
+      aws_sec_key AWS_SEC_KEY
+      s3_bucket S3_BUCKET_NAME
+      s3_region S3_REGION
+#      s3_endpoint s3-ap-northeast-1.amazonaws.com
+      path ${hostname}/${tag_parts[0]}.${tag_parts[1]}/
+      buffer_path /var/log/td-agent/s3/${tag_parts[0]}.${tag_parts[1]}
+      time_slice_format %Y-%m-%d/%H.log
+      time_slice_wait 10m
+    </store>
+    <store>
+      @type file
+      path /var/log/td-agent/${tag_parts[0]}.${tag_parts[1]}.log
+      compress gzip
+      <format>
+        localtime false
+      </format>
+      <buffer time>
+        timekey_wait 10m
+        timekey 86400
+        timekey_use_utc false
+        path /var/log/td-agent/buffer/${tag_parts[0]}.${tag_parts[1]}
+      </buffer>
+      <inject>
+        time_key time
+        time_format %Y%m%dT%H%M%S%z
+        localtime false
+      </inject>
+    </store>
+    <store>
+      @type flowcounter
+      count_keys *
+      unit minute
+      aggregate all
+      tag flowcount
+    </store>
+  </template>
+</match>
+
+<match flowcount>
+  @type file
+  path /var/log/td-agent/traffic
+  time_slice_format %Y%m%d%H%M
+</match>
+
+## global system setting
+<system>
+  @log_level info
+  suppress_repeated_stacktrace
+  suppress_config_dump
+  emit_error_log_interval 1
+  <log>
+    time_format %Y-%m-%dT%H:%M:%S.%L %z
+  </log>
+</system>

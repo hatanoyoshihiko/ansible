@@ -1,0 +1,28 @@
+---
+- name: td-agent install check
+  yum:
+    list: td-agent
+  register: yum_check
+
+- name: fluentd-plugin existence check
+  find:
+    paths: /opt/td-agent/embedded/lib/ruby/gems/2.4.0/gems
+    recurse: no
+    file_type: directory
+    patterns: "{{ td_server_plugin }}*"
+  register: plugin_check
+
+- name: add repository & install td
+  shell: curl -L https://toolbelt.treasuredata.com/sh/install-redhat-td-agent3.sh | sh
+  when:  yum_check.results | selectattr("yumstate", "match", "installed") | list | length == 0
+
+- name: install plugin for td_agent
+  gem:
+    executable: /usr/sbin/td-agent-gem
+    name: "{{ item.name }}"
+    state: latest
+    user_install: no
+#    version: "{{ item.version }}"
+  with_items: "{{ td_server_plugin }}"
+  when: plugin_check.matched == 0
+...

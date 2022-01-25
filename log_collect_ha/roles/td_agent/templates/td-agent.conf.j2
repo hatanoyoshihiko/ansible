@@ -1,0 +1,147 @@
+# td-agent.conf for agent
+
+##
+<source>
+  @type tail
+  <parse>
+    @type syslog
+  </parse>
+  path /var/log/messages
+  read_from_head
+  pos_file /var/log/td-agent/messages_{{ ansible_hostname }}.log.pos
+  tag messages.syslog
+  refresh_interval 60
+  #@log_level info
+</source>
+
+<source>
+  @type tail
+  <parse>
+    @type syslog
+  </parse>
+  path /var/log/secure
+  read_from_head
+  pos_file /var/log/td-agent/secure_{{ ansible_hostname }}.log.pos
+  tag secure.syslog
+  refresh_interval 60
+  #@log_level info
+</source>
+
+<source>
+  @type tail
+  <parse>
+    @type apache2
+  </parse>
+  path /var/log/httpd/access_log
+  read_from_head
+  pos_file /var/log/td-agent/httpd-access_{{ ansible_hostname }}.log.pos
+  tag apache.access
+  refresh_interval 60
+  #@log_level info
+</source>
+
+<source>
+  @type tail
+  <parse>
+    @type apache2
+  </parse>
+  path /var/log/httpd/ssl_access_log
+  read_from_head
+  pos_file /var/log/td-agent/httpd-ssl_access_{{ ansible_hostname }}.log.pos
+  tag apache.access.ssl
+  refresh_interval 60
+  #@log_level info
+</source>
+
+<source>
+  @type tail
+  <parse>
+    @type none
+  </parse>
+  path /var/log/httpd/error_log
+  read_from_head
+  pos_file /var/log/td-agent/httpd-error_{{ ansible_hostname }}.log.pos
+  tag apache.error
+  refresh_interval 60
+  #@log_level error
+</source>
+
+<source>
+  @type tail
+  <parse>
+    @type none
+  </parse>
+  path /var/log/httpd/ssl_error_log
+  read_from_head
+  pos_file /var/log/td-agent/httpd-ssl_error_{{ ansible_hostname }}.log.pos
+  tag apache.error.ssl
+  refresh_interval 60
+  #@log_level error
+</source>
+
+# plugin monitoring
+<source>
+  @type monitor_agent
+  bind 0.0.0.0
+  port 24220
+</source>
+
+## debug setting
+<source>
+  @type debug_agent
+  bind 127.0.0.1
+  port 24230
+</source>
+
+## output setting
+<match **>
+  @type forward
+  send_timeout 60s
+  recover_wait 10s
+  heartbeat_type udp
+  heartbeat_interval 1
+  phi_failure_detector true
+  phi_threshold 16
+  hard_timeout 60s
+
+  <server>
+    name {{ groups.td_server[0] }}
+    host {{ hostvars.td_server01.ansible_host }}
+    port 24224
+    weight 60
+    #username USERNAME
+    #password PASSWORD
+  </server>
+
+  #<server>
+  #  name groups.td_server[1] ##Please surround it withcurly bracket when using it.
+  #  host hostvars.td_server02.ansible_host ##Please surround it withcurly bracket when using it.
+  #  port 24224
+  #  weight 60
+  #  #sername USERNAME
+  #  password PASSWORD
+  #  stand by ##Write it on the standby side.
+  #</server>
+
+  <secondary>
+    @type file
+    path /var/log/td-agent/failed_records
+    time_slice_wait 60s
+    try_flush_interval 1.0
+    retry_limit 18
+    disable_retry_limit false
+    max_retry_wait 300s
+    queued_chunk_flush_interval 20s
+  </secondary>
+</match>
+
+## global system setting
+<system>
+  @log_level info
+  suppress_repeated_stacktrace
+  suppress_config_dump
+  emit_error_log_interval 1
+  <log>
+    time_format %Y-%m-%dT%H:%M:%S.%L %z
+  </log>
+</system>

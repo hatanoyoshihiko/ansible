@@ -1,0 +1,40 @@
+---
+## file discriptors settings
+- name: soft nofile for root
+  pam_limits:
+    domain: root
+    limit_type: soft
+    limit_item: nofile
+    value: 65536
+
+- name: hard nofile for root
+  pam_limits:
+    domain: root
+    limit_type: hard
+    limit_item: nofile
+    value: 65536
+
+- name: soft nofile for all users
+  pam_limits:
+    domain: "*"
+    limit_type: soft
+    limit_item: nofile
+    value: 65536
+
+- name: hard nofile for all users
+  pam_limits:
+    domain: "*"
+    limit_type: hard
+    limit_item: nofile
+    value: 65536
+
+## Optimize Network Kernel Parameters settings
+- name: Network Kernel Parameters settings
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    ignoreerrors: yes
+  with_items:
+    - "{{ network_kernel_parameters }}"
+...

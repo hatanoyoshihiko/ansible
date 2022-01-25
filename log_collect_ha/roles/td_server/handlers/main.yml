@@ -1,0 +1,17 @@
+---
+## handlers
+- name: start_td-agent
+  systemd:
+    name: td-agent.service
+    state: started
+    enabled: yes
+  become: yes
+  listen: "start_td-agent"
+
+- name: restart_td-agent
+  systemd:
+    name: td-agent.service
+    state: restarted
+  become: yes
+  listen: "restart_td-agent"
+...
