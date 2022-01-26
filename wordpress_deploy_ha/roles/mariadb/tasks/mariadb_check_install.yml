@@ -1,0 +1,16 @@
+---
+## firewalldのポート許可
+#- name: check_install / Allow ports for firewalld
+#  firewalld:
+#    port: "{{ item}}"
+#    permanent: yes
+#    immediate: yes
+#    state: enabled
+#  with_items: "{{ mariadb_firewalld_port }}"
+
+## 不要なパッケージの削除
+- name: mariadb_check_install / Remove current packages
+  yum:
+    name: mariadb-libs
+    state: absent
+...
