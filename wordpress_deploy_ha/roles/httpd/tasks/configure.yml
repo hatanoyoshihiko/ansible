@@ -1,0 +1,36 @@
+---
+## httpd設定の配備
+- name: configure / Setup global configuration file
+  copy:
+    src: httpd.conf
+    dest: /etc/httpd/conf/httpd.conf
+    owner: root
+    group: root
+    mode: 644
+    backup: yes
+
+## httpd設定の配備
+#- name: configure / Setup configuration
+#  template:
+#    src: httpd.conf.j2
+#    dest: /etc/httpd/conf/httpd.conf
+#    owner: root
+#    group: root
+#    mode: 644
+
+## httpdの起動
+- name: configure / Start httpd service
+  systemd:
+    name: httpd
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+
+## httpdの起動確認
+- name: configure / Wait for httpd restart
+  wait_for:
+    host: "{{ ansible_eth0.ipv4.address }}"
+    port: "{{ httpd_service_port }}"
+    delay: 3
+    timeout: 30
+...

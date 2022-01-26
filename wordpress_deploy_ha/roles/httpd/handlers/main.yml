@@ -1,0 +1,9 @@
+---
+- name: restart httpd
+  systemd:
+    name: httpd
+    state: restarted
+- name: reload httpd
+  systemd:
+    name: httpd
+    state: reloaded

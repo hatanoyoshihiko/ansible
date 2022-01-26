@@ -1,0 +1,5 @@
+---
+#- include: roles/nginx/tasks/check_install.yml
+- include: roles/httpd/tasks/install.yml
+- include: roles/httpd/tasks/configure.yml
+...

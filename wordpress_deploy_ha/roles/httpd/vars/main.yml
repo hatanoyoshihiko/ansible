@@ -1,0 +1,10 @@
+---
+httpd_service_port: 8080
+httpd_packages:
+  - httpd
+  - php
+  - php-mysqlnd
+  - php-pdo
+wordpress_doc_root: "/var/www/html/wordpress"
+document_root: /var/www/html
+...

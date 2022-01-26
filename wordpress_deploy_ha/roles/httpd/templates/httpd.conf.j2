@@ -1,0 +1,44 @@
+ServerRoot "/usr/local/apache2"
+Listen 80
+KeepAlive On
+KeepAliveTimeout 15
+MaxKeepAliveRequests 100
+Timeout 300
+
+User apache
+Group apache
+ServerName example.com
+ServerAdmin root@example.com
+DocumentRoot "/var/www/html"
+<Directory /> ... </Directory>
+DirectoryIndex index.html index.php
+TypesConfig conf/mime.types
+DefaultType text/plain
+ServerTokens Prod
+ServerSignature Off
+Alias /icons/ "/usr/local/apache2/icons/"
+
+NameVirtualHost *:80
+<VirtualHost *:80>
+  ServerName arumakan.org
+  DocumentRoot /var/www/lokka/public
+  <Directory /var/www/lokka/public>
+    Allow from all
+  </Directory>
+</VirtualHost>
+
+<VirtualHost *:80>
+  ServerName gakuweb.com
+  DocumentRoot /var/www/eden/public
+  <Directory /var/www/html>
+    Allow from all
+  </Directory>
+</VirtualHost>
+
+<VirtualHost *:80>
+  ServerName 19950117.jp
+  DocumentRoot /var/www/shinsaiNow/public
+  <Directory /var/www/html>
+    Allow from all
+  </Directory>
+</VirtualHost>
