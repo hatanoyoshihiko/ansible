@@ -1,0 +1,25 @@
+---
+## HAproxy設定の配備
+- name: configure / Setup configuration file
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+
+## HAproxyの起動
+- name: configure / Start haproxy service
+  systemd:
+    name: haproxy
+    state: reloaded
+    enabled: yes
+
+## HAproxyの起動確認
+- name: configure / Wait for haproxy reload
+  wait_for:
+    port: "{{ haproxy_stats_port }}"
+    delay: 3
+    timeout: 30
+...

@@ -1,0 +1,8 @@
+---
+## HAproxyのインストール
+- name: haproxy / install / Install required packages
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ haproxy_packages }}"  
+...

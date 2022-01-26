@@ -1,0 +1,19 @@
+---
+## firewalldのポート許可
+#- name: check_install / Allow ports for firewalld
+#  firewalld:
+#    port: "{{ item }}"
+#    permanent: yes
+#    immediate: yes
+#    state: enabled
+#  with_items: "{{ haproxy_firewalld_port }}"
+
+## 非ローカルIPへのバインディング許可
+- name: check_install / Ensure binding to non-up interface
+  sysctl:
+    state: present
+    name: 'net.ipv4.ip_nonlocal_bind'
+    value: 1
+    sysctl_set: yes
+    reload: yes
+...
