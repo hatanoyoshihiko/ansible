@@ -1,0 +1,34 @@
+<?php
+/** The name of the databas for WordPress */
+define('DB_NAME', '{{ wordpress_db_name }}');
+
+/** MySQL database username */
+define('DB_USER', '{{ wordpress_db_user }}');
+
+/** MySQL databas password */
+define('DB_PASSWORD', '{{ wordpress_db_password }}');
+
+/** MySQL hostname */
+define('DB_HOST', '{{ hostvars.db_vip.ansible_host }}');
+
+/** Database Charset to use in creating databases tables. */
+define('DB_CHARSET', 'utf8');
+
+/** The Database Collate type. Don't change this if in doubt. */
+define('DB_COLLATE', '');
+
+/** Authentication Unique Keys and Salts. */
+{{ wordpress_salt.content }}
+
+/** WordPress Database Table prefix. */
+$table_prefix = 'wp_';
+
+/** For developers: WordPress debugging mode. */
+define('WP_DEBUG', false);
+
+/** Absolute path to the WordPress directory. */
+if ( !defined('ABSPATH') )
+	define('ABSPATH', dirname(__FILE__) . '/');
+
+/** Sets up WordPress vars and included files. */
+require_once(ABSPATH . 'wp-settings.php');

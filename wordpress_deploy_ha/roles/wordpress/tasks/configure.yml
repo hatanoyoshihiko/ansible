@@ -1,0 +1,49 @@
+---
+## WordPressのシークレットキー取得
+## WordPressのAPIからパスワードを生成し、cookieを無効化する
+- name: configure / Fetch random salts for wordpress config
+  uri:
+    url: https://api.wordpress.org/secret-key/1.1/salt/
+    return_content: yes
+  register: "wordpress_salt"
+  run_once: true
+
+- block:
+##### blockの開始 #####
+## WordPressのDB作成
+  - name: configure / Create WordPress database
+    mysql_db:
+      login_password: "{{ mariadb_root_pass }}"
+      name: "{{ wordpress_db_user }}"
+      state: present
+
+## WordPress DBユーザの作成
+  - name: configure / Create WordPress database user
+    mysql_user:
+      login_password: "{{ mariadb_root_pass }}"
+      name: "{{ wordpress_db_user }}"
+      password: "{{ wordpress_db_password }}"
+      host: "{{ ansible_eth0.ipv4.network }}/{{ ansible_eth0.ipv4.netmask }}"
+      priv: "{{ wordpress_db_name }}.*:ALL"
+      state: present
+
+  run_once: true #block全体に適用される
+  delegate_to: "{{ hostvars.mariadb01.ansible_host }}" #block全体に適用される。
+##### blockの終了 #####
+
+## Wordpress設定の配置
+- name: configure / Deploy WordPress config file
+  template:
+    src: wp-config.php.j2
+    dest: /home/ec2-user/wordpress-{{ wordpress_version }}/wp-config.php
+    owner: apache
+    group: apache
+    mode: 0644
+    backup: yes
+
+## apacheの再起動
+- name: configure / Reload httpd
+  systemd:
+    name: httpd
+    state: reloaded
+...

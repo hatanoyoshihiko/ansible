@@ -1,0 +1,30 @@
+---
+- name: Deploy Database for wordpress
+  hosts: databases
+  become: true
+#  vars:
+#    ansible_sudo_pass: 'ansible'
+  roles:
+    - { role: common, tags: common }
+    - { role: mariadb, tags: mariadb }
+    - { role: haproxy, cluster_service: db_cluster, tags: haproxy }
+    - { role: keepalived, cluster_service: db_cluster, tags: keepalived }
+
+- name: Deploy Application for wordpress
+  hosts: apps
+  become: true
+  roles:
+    - { role: common, tags: common }
+#    - { role: nginx, tags: nginx }
+#    - { role: php-fpm, tags: php-fpm }
+    - { role: httpd, tags: httpd }
+    - { role: wordpress, tags: wordpress }
+
+- name: Deploy LoadBalancer for wordpress
+  hosts: lbs
+  become: true
+  roles:
+    - { role: common, tags: common }
+    - { role: haproxy, cluster_service: app_cluster, tags: haproxy }
+    - { role: keepalived, cluster_service: app_cluster, tags: keepalived }
+...
