@@ -1,0 +1,9 @@
+---
+- name: configure / cron shutdown at AM 1:00
+  cron:
+    name: "daily shutdown"
+    minute: "0"
+    hour: "1"
+    job: "/sbin/shutdown -h now"
+    user: root
+...

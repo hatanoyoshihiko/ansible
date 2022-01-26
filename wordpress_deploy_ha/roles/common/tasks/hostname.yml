@@ -1,0 +1,14 @@
+---
+- name: configure / input hostname
+  pause:
+    prompt: Please input hostname
+  register: input_hostname
+
+- name: configure / hostname settings
+  lineinfile:
+    path: /etc/hostname
+    regexp: "^ip-.*"
+    line: "{{ input_hostname.user_input }}"
+    state: present
+    backup: yes
+...

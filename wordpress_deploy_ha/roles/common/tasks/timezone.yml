@@ -1,0 +1,13 @@
+---
+## タイムゾーンを日本に変更
+- name: configure / timezone
+  lineinfile: >-
+    dest='/etc/sysconfig/clock'
+    state=present
+    backrefs=yes
+    regexp='^ZONE=.*'
+    line='ZONE="Asia/Tokyo"'
+
+- name: configure localtime
+  command: ln -sf /usr/share/zoneinfo/Japan /etc/localtime
+  become: true

@@ -1,0 +1,34 @@
+---
+## Selinuxの停止と自動起動オフ
+- name: configure / Selinux off and disable
+  selinux:
+    #    policy: targeted
+    state: disabled
+#  when : ansible_selinux.config_mode == 'enforcing'
+
+## ipv6インターフェイスの無効化
+- name: configure / Disable ipv6 interface
+  sysctl:
+    state: present
+    name: "{{ item }}"
+    value: 1
+    sysctl_set: yes
+    reload: yes
+  with_items:
+    - net.ipv6.conf.all.disable_ipv6
+    # - net.ipv6.conf.default.disable_ipv6
+    # - net.ipv6.conf.lo.disable_ipv6
+
+## yum updateの実施
+- name: configure / update yum packages
+  yum:
+    name: "*"
+    state: latest
+    update_cache: yes
+## EPELリポジトリの追加
+## amazon linux2はyumでepelが入らない
+#- name: configure / import EPEL Repository
+#  yum:
+#    name: epel-release
+#    state: latest
+#    update_cache: yes
