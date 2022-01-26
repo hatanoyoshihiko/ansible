@@ -1,0 +1,122 @@
+---
+### keepalivedのdefaults設定
+- name: configure / Configure service defaults
+  copy:
+    src: default_keepalived
+    dest: /etc/default/keepalived
+    owner: root
+    group: root
+    mode: 0644
+
+## keepalived設定の配備 lbs01
+- name: configure / Setup configuration file
+  template:
+    src: keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    ansible_eth0.ipv4.address == "172.16.0.21"
+
+## keepalived設定の配備 lbs02
+- name: configure / Setup configuration file
+  template:
+    src: keepalived0.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    ansible_eth0.ipv4.address == "172.16.0.22"
+
+## keepalived設定の配備 mariadb01
+- name: configure / Setup configuration file
+  template:
+    src: keepalived1.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    ansible_eth0.ipv4.address == "172.16.0.41"
+
+## keepalived設定の配備 mariadb02
+- name: configure / Setup configuration file
+  template:
+    src: keepalived2.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    ansible_eth0.ipv4.address == "172.16.0.42"
+
+## マスター切替時のスクリプト配布 lbs01
+- name: configure / Setup switch script file
+  copy:
+    src: /etc/ansible/wordpress/roles/keepalived/files/lbs_route_table_update.sh
+    dest: /etc/keepalived
+    owner: root
+    group: root
+  when:
+    ansible_eth0.ipv4.address == "172.16.0.21"
+
+## マスター切替時のスクリプト配布 lbs02
+- name: configure / Setup switch script file
+  copy:
+    src: /etc/ansible/wordpress/roles/keepalived/files/lbs_route_table_update.sh
+    dest: /etc/keepalived
+    owner: root
+    group: root
+  when:
+    ansible_eth0.ipv4.address == "172.16.0.22"
+
+## マスター切替時のスクリプト配布 mariadb01
+- name: configure / Setup switch script file
+  copy:
+    src: /etc/ansible/wordpress/roles/keepalived/files/mariadb_route_table_update.sh
+    dest: /etc/keepalived
+    owner: root
+    group: root
+  when:
+    ansible_eth0.ipv4.address == "172.16.0.41"
+
+## マスター切替時のスクリプト配布 mariadb02
+- name: configure / Setup switch script file
+  copy:
+    src: /etc/ansible/wordpress/roles/keepalived/files/mariadb_route_table_update.sh
+    dest: /etc/keepalived
+    owner: root
+    group: root
+  when:
+    ansible_eth0.ipv4.address == "172.16.0.42"
+
+## Rsyslog設定の配備
+- name: configure / Setup configuration file for rsyslog
+  template:
+    src: rsyslog_service.conf.j2
+    dest: /etc/rsyslog.d/keepalived.conf
+    owner: root
+    group: root
+    mode: 0644
+
+## keepalivedの起動
+- name: configure / Start keepalived service
+  systemd:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - keepalived
+    - rsyslog
+
+## keepalivedの起動確認
+- name: configure / Wait for keepalived reload
+  local_action:
+    module: wait_for
+    host: "{{ item.address }}"
+    delay: 5
+    timeout: 30
+  with_items: "{{ keepalived_vip_interfaces }}"
+  run_once: True
+...

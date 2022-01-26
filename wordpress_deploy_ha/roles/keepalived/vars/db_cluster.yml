@@ -1,0 +1,7 @@
+---
+keepalived_vip_interfaces:
+  - { address: "{{ hostvars.db_vip.ansible_host }}", device: 'eth0' }
+
+keepalived_target: "{{ groups['databases'] }}"
+keepalived_offset: 20
+...
