@@ -1,0 +1,37 @@
+---
+- name: Initialize OS setting for Linux Servers
+  hosts: campus
+  #  strategy: debug
+  #  debugger: always
+  become: true
+
+  # 環境変数が必要な場合は以下を設定しておく。
+  # vars:
+  # ansible_sudo_pass: 'ansible'
+
+  # インターネットへのプロキシが必要な場合
+  # environment:
+  # http_proxy: "http://proxy.jp:8080"
+  # https_proxy: "http://proxy.jp:8080"
+
+  roles:
+    - { role: common/locale, tags: locale }
+    - { role: common/packages, tags: packages }
+    - { role: common/users, tags: users }
+    - { role: common/networks, tags: networks }
+    - { role: common/resolver, tags: resolver }
+    - { role: common/times, tags: times }
+
+  post_tasks:
+    - name: Restart target nodes
+      reboot:
+        reboot_timeout: 300
+
+    - name: Waiting for servers to come back
+      local_action:
+        module: wait_for
+        host: "{{ ansible_host }}"
+        port: 22
+        state: started
+        delay: 30
+        timeout: 300
