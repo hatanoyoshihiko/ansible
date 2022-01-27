@@ -1,0 +1,39 @@
+---
+## kdump settings
+- name: main / Install kexec-tools
+  yum:
+    name: kexec-tools
+    state: installed
+
+- name: main / Configure kdump
+  copy:
+    src: kdump.conf
+    dest: /etc/kdump.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+
+- name: main / Start kdump service
+  systemd:
+    name: kdump
+    state: started
+    enabled: yes
+
+- name: main / reboot on kernel panic
+  sysctl:
+    name: kernel.panic
+    value: 10
+    state: present
+    #ignoreerrors: yes
+    reload: yes
+## When the main memory is 4 GB or less
+## grub settings
+#- name: main / grub settings
+#  copy:
+#    src: grub2.cfg
+#    dest: /boot/grub2/grub2.cfg
+#    owner: root
+#    group: root
+#    mode: 0644
+#    backup: yes
