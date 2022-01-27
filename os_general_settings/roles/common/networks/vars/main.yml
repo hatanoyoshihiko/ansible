@@ -1,0 +1,12 @@
+---
+network_packages:
+  - NetworkManager
+  - NetworkManager-glib
+  - NetworkManager-libnm-devel.x86_64
+  - nm-connection-editor.x86_64
+  - libsemanage-python
+  - libnm-gtk.x86_64
+  - libnm-gtk-devel.x86_64
+  - policycoreutils-python
+  - dbus-python
+  - python-gobject
