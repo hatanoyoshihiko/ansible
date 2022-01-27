@@ -1,0 +1,8 @@
+---
+operation_ip: "{{ ansible_host }}/24"
+internal_ip: "192.168.10.201/24"
+external_ip: "172.16.0.11/24"
+etwork_ethernet:
+  - { conn_name: "ens160", ipv4: "{{ operation_ip}}", gw4: "{{ operation_gw}}" }
+  - { conn_name: "ens192", ipv4: "{{ internal_ip}}", gw4: "{{ internal_gw}}" }
+---

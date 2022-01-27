@@ -1,0 +1,15 @@
+---
+operation_gw: "192.168.10.254" #eth0 GW
+internal_gw: "10.0.2.2" #eth1 GW
+external_gw: "172.16.0.254" #bonding GW
+
+network_ethernet:
+  - { conn_name: 'eth0', ip4: "{{ internal_ip }}", gw4: "{{ internal_gw }}" }
+  - { conn_name: 'eth1', ip4: "{{ operation_ip }}", gw4: "{{ operation_gw }}" }
+
+network_bond:
+  - { conn_name: 'bond0', ip4: "{{ external_ip }}", gw4: "{{ external_gw }}" }
+
+network_bond_slave:
+  - { conn_name: 'eth10', master: 'bond0' }
+  - { conn_name: 'eth20', master: 'bond0' }
