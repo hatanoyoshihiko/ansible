@@ -1,0 +1,47 @@
+---
+## NTPパッケージのインストール
+- name: main / Install the required packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ ntp_packages }}"
+
+## NTPの設定ファイル配備
+- name: main / Setup template file
+  template:
+    src: ntp.conf.j2
+    dest: /etc/ntp.conf
+
+## 時差の確認
+- name: main / Check time subtraction
+  shell: >-
+    ntpdate -q {{ ntp_servers[0] }} |
+    awk 'END{print $10}'
+  register: time_subtraction
+
+- block:
+##### blockの開始 #####
+## ntpの停止
+  - name: main / Stop NTP service
+    systemd:
+      name: ntpd
+      state: stopped
+
+## ソフトウェア時刻同期
+  - name: main / Sync software time
+    command: ntpdate "{{ ntp_servers[0] }}"
+
+## ハードウェア時刻同期
+  - name: main / Sync hardware time
+    command: hwclock --systohc --localtime
+
+  when: time_subtraction.stdout|int|abs > 10 ##block全体に適用されるパラメータ
+
+##### blockの終了 #####
+
+## NTPの起動
+- name: times / main / Start NTP service
+  systemd:
+    name: ntpd
+    state: started
+    enabled: yes

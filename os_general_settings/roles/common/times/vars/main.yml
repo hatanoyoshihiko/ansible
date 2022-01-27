@@ -1,0 +1,13 @@
+---
+ntp_servers:
+  - "ntp.nict.jp"
+  - "ntp.jst.mfeed.ad.jp"
+
+ntp_restrict:
+  - { network: 10.0.0.0, netmask: 255.0.0.0 }
+  - { network: 172.16.0.0, netmask: 255.255.0.0 }
+  - { network: 192.168.0.0, netmask: 255.255.0.0 }
+
+ntp_packages:
+  - libselinux-python
+  - ntp

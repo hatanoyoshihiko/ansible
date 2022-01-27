@@ -1,0 +1,14 @@
+{% for server in ntp_servers %}
+server {{ server }}
+{% endfor %}
+
+restrict default ignore
+restrict 127.0.0.1
+{% for restrict in ntp_restrict %}
+restrict {{ restrict.network }} mask {{ restrict.netmask }} nopeer
+ nomodify notrap notrust{% endfor %}
+
+server 127.127.1.0
+fudge 127.127.1.0 stratum 10
+driftfile /etc/ntp.drift
+authenticate no
