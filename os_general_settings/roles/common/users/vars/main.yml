@@ -1,0 +1,14 @@
+---
+user_newusers:
+  user01:
+    detail: "Administration Users"
+    pass: "{{ 'password' | password_hash('sha256') }}"
+    groups: sys
+    priv: admin
+
+  user02:
+    detail: "Operation User"
+    pass: "{{ 'password' | password_hash('sha256') }}"
+    groups: users
+    priv: member
+...

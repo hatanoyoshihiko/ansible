@@ -1,0 +1,37 @@
+---
+## 所属グループの作成
+- name: main / Create new groups
+  group:
+    name: "{{ item.value.groups }}"
+  with_dict: " {{ user_newusers }}"
+
+## 新規ユーザ作成
+- name: main / Create new users
+  user:
+    name: "{{ item.key }}"
+    password: "{{ item.value.pass }}"
+    shell: /bin/bash
+    home: "/home/{{ item.key }}"
+    state: present
+    groups: "{{ item.value.groups }}"
+  with_dict: "{{ user_newusers }}"
+
+## 公開鍵登録
+- name: main / Distribute authorized key
+  authorized_key:
+    user: "{{ item.key }}"
+    key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}" #ansibleホストの公開鍵を指定
+  with_dict: "{{ user_newusers }}"
+
+## システム権限の付与
+- name: main / Deploy temporary sudoers files
+  template:
+    src: "{{ item.value.priv }}_sudoers.j2"
+    dest: "/etc/sudoers.d/{{ item.key }}"
+    owner: root
+    group: root
+    mode: 0400
+    validate: 'visudo -c -f %s'
+  with_dict: "{{ user_newusers }}"
+
+...
