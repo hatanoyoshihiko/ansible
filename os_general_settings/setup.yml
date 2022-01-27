@@ -1,6 +1,6 @@
 ---
 - name: Initialize OS setting for Linux Servers
-  hosts: campus
+  hosts: gropus
   #  strategy: debug
   #  debugger: always
   become: true
