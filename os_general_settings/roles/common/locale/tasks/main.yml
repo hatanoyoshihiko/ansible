@@ -1,0 +1,14 @@
+---
+## タイムゾーンの設定
+- name: main / Setup timezone
+  timezone:
+    name: "{{ locale_timezone }}"
+
+## システムロケールの設定
+- name: main / Setup locale
+  command: localectl set-locale LANG={{ locale_locale }}
+
+## キーボードマップの設定
+- name: main / Setup keymaps
+  command: localectl set-keymap {{ locale_keymap }}
+...
