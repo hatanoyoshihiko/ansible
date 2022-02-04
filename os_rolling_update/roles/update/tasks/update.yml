@@ -1,0 +1,21 @@
+---
+# System common settings
+- block:
+    - name: configure / update all packages
+      dnf:
+        name: "*"
+        state: latest
+        update_cache: yes
+  when:
+    - ansible_distribution in ["CentOS", "AlmaLinux", "RedHat"]
+    - ansible_distribution_major_version == "8"
+
+- block:
+    - name: configure / update all packages
+      apt:
+        name: "*"
+        state: latest
+        update_cache: yes
+  when:
+    - ansible_distribution in ["Ubuntu"]
+    - ansible_distribution_version | float >= 20.04
