@@ -1,0 +1,25 @@
+---
+mariadb_conf:
+  conf_dir: /etc/mysql/mariadb.conf.d/
+  conf_server_src: mariadb-server.cnf.ubuntu.j2
+  conf_server: 50-server.cnf
+  conf_client_src: clients.cnf.j2
+  conf_client: 50-client.cnf
+
+chrony:
+  conf_dir: /etc/chrony/
+  conf_src: chrony.conf.j2
+  conf: chrony.conf
+
+php_fpm:
+  conf_dir: /etc/zabbix/
+  conf: apache.conf
+  regex: "^¥s.*# php_value date.timezone Europe/Riga"
+  insertafter: "# php_value date.timezone Europe/Riga"
+  line: "        php_value date.timezone Asia/Tokyo"
+
+zabbix:
+  service:
+    - zabbix-server
+    - zabbix-agent
+    - apache2

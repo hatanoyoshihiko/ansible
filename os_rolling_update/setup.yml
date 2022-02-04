@@ -1,0 +1,51 @@
+---
+# vars:
+# ansible_sudo_pass: 'ansible'
+
+# environment:
+# http_proxy: "http://proxy.jp:8080"
+# https_proxy: "http://proxy.jp:8080"
+
+- name: Start rolling update
+  hosts: ubuntu,alma
+  become: true
+  order: inventory
+  serial: 1
+
+  pre_tasks:
+    - name: stop service before update
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+      loop:
+        - httpd
+      when:
+        - ansible_distribution in ["CentOS", "AlmaLinux", "RedHat"]
+        - ansible_distribution_major_version == "8"
+
+    - name: stop service before update
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+      loop:
+        - apache2
+      when:
+        - ansible_distribution in ["Ubuntu"]
+        - ansible_distribution_version | float >= 20.04
+
+  roles:
+    - { role: update, tags: update }
+
+  post_tasks:
+    - name: Restart target nodes
+      reboot:
+        reboot_timeout: 300
+
+    - name: Waiting for servers to come back
+      wait_for:
+        host: "{{ ansible_ssh_host | default(ansible_host) | default(inventory_hostname) }}"
+        port: 22
+        state: started
+        delay: 10
+        timeout: 300
+      connection: local
