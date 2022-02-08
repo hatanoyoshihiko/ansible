@@ -2,13 +2,13 @@
 
 ## Clone Repository
 
-`# cd /etc/ansible`
-`# git clone https://github.com/hatanoyoshihiko/zabbix.git`
-`# cd zabbix/ansible`
+`# cd /etc/ansible`  
+`# git clone https://github.com/hatanoyoshihiko/zabbix.git`  
+`# cd zabbix/ansible`  
 
 ## Configure inventory file
 
-`# vi /etc/ansible/inventory/inventory.ini`
+`# vi /etc/ansible/inventory/inventory.ini`  
 
 ```ini
 [zabbix_server]
@@ -22,16 +22,16 @@ mariadb01 ansible_host=172.20.55.190
 
 - syntax check
 
-`# cd /etc/ansible`
-`# ansible-playbook -i inventory/inventory.ini -k --syntax-check`
+`# cd /etc/ansible`  
+`# ansible-playbook -i inventory/inventory.ini -k --syntax-check`  
 
 - run playbook
 
-`# ansible-playbook -i inventory/inventory.ini -k`
+`# ansible-playbook -i inventory/inventory.ini -k`  
 
 ## Initial zabbix setting
 
-Access to zabbix URL to be appered end of playbook.
+Access to zabbix URL to be appered end of playbook.  
 
 1. Welcome
 Push Next step.
@@ -61,5 +61,5 @@ Push Next step
 
 6. Install
 
-If below message shows, you can access to zabbix server.
+If below message shows, you can access to zabbix server.  
 "Congratulations! You have successfully installed Zabbix frontend."
