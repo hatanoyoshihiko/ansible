@@ -11,7 +11,7 @@
 - [wordpress_deploy_ha](./wordpress_deploy_ha/README.md)  
   deploy httpd, mariadb, keepalived, haproxy.
 
-- [zabbix_deploy](https://github.com/hatanoyoshihiko/zabbix/blob/main/ansible/README.md)
+- [zabbix_deploy](https://github.com/hatanoyoshihiko/zabbix/blob/main/ansible/README.md)  
   deploy zabbix server using mariadb.
 
 ## Ansible Tips
